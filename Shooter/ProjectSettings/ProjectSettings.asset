@@ -697,10 +697,10 @@ PlayerSettings:
     Purchasing: 0
     UNet: 0
     Unity_Ads: 0
-  facebookSdkVersion: 
+  facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
   cloudProjectId: e3d05a71-781f-4fce-9129-77cc8f4af686
-  projectName: 
+  projectName: Shooter (1)
   organizationId: radunl
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
