@@ -16,22 +16,27 @@ public class ViveInput : MonoBehaviour
         m_trackedObject = GetComponent<SteamVR_TrackedObject>();
         m_gun = GetComponentInChildren<GunController>();
     }
-	
-	private void Update ()
-	{
-	    Device = SteamVR_Controller.Input((int) m_trackedObject.index);
 
-	    if (Device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
-	    {
-	        m_gun.Fire();
-	    }
+    private void Update()
+    {
+        Device = SteamVR_Controller.Input((int) m_trackedObject.index);
 
-	    if (Device.GetTouchUp(SteamVR_Controller.ButtonMask.Trigger))
-	    {
-	        
-	    }
+        if (Device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+        {
+            m_gun.ShowRay = true;
+        }
 
-	    var triggerValue = Device.GetAxis(EVRButtonId.k_EButton_SteamVR_Trigger);
-	    m_gun.SetTriggerRotation(triggerValue.x);
-	}
+        if (Device.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
+        {
+            m_gun.ShowRay = false;
+        }
+
+        if (Device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
+        {
+            m_gun.Fire();
+        }
+
+        var triggerValue = Device.GetAxis(EVRButtonId.k_EButton_SteamVR_Trigger);
+        m_gun.SetTriggerRotation(triggerValue.x);
+    }
 }

@@ -8,24 +8,58 @@ public class GunController : MonoBehaviour
     public Transform Barrel;
     public Transform Trigger;
     public GameObject BulletHolePrefab;
+    public float Range = 100f;
+
+
 
     public readonly int Damage = 10;
 
     private List<GameObject> m_bulletHoles = null;
     private int m_ammo = 0;
     private readonly int m_magazineSize = 5;
+    public LineRenderer GunLine;
+    private Ray RayFromGun;
+    public bool ShowRay;
 
     private void Awake()
     {
         m_ammo = m_magazineSize;
 
-        m_bulletHoles = CreateBulletHoles(BulletHolePrefab, m_magazineSize); 
+        m_bulletHoles = CreateBulletHoles(BulletHolePrefab, m_magazineSize);
+        GunLine = GetComponent<LineRenderer>();
+        DisableEffects();
+        ShowRay = false;
+    }
 
+    private void Update()
+    {
+        RayFromGun = new Ray(Barrel.position, Barrel.forward);
+        if (ShowRay)
+        {
+            DisplayRay();
+        }
+        else
+        {
+            DisableEffects();
+        }
+    }
+
+    private void DisableEffects()
+    {
+        GunLine.enabled = false;
     }
     public void SetTriggerRotation(float triggerValue)
     {
         var targetX = triggerValue * 25.0f;
         Trigger.transform.localEulerAngles = new Vector3(targetX, 0, 0);
+    }
+
+    private void DisplayRay()
+    {
+        GunLine.enabled = true;
+        GunLine.SetPosition(0, transform.position);
+
+        GunLine.SetPosition(1, RayFromGun.origin + RayFromGun.direction * Range);
     }
 
     public void Fire()
@@ -37,9 +71,8 @@ public class GunController : MonoBehaviour
         m_ammo--;
 
         RaycastHit hit;
-        var ray = new Ray(Barrel.position, Barrel.forward);
 
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(RayFromGun, out hit))
         {
             CheckForDamage(hit.collider.gameObject);
 
