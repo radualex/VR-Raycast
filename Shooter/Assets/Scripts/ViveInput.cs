@@ -13,20 +13,27 @@ public class ViveInput : MonoBehaviour
 
     private void Awake()
     {
-        m_trackedObject = GetComponent<SteamVR_TrackedObject>();
-        m_gun = GetComponentInChildren<GunController>();
+
     }
 
     private void Update()
     {
+        m_trackedObject = GetComponent<SteamVR_TrackedObject>();
+        m_gun = GetComponentInChildren<GunController>();
+
+        if (m_trackedObject == null || m_gun == null)
+        {
+            return;
+        }
+
         Device = SteamVR_Controller.Input((int) m_trackedObject.index);
 
-        if (Device.GetPressDown(SteamVR_Controller.ButtonMask.Grip))
+        if (Device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
         {
             m_gun.ShowRay = true;
         }
 
-        if (Device.GetPressUp(SteamVR_Controller.ButtonMask.Grip))
+        if (Device.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad))
         {
             m_gun.ShowRay = false;
         }
