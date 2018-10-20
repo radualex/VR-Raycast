@@ -6,7 +6,7 @@ public class Body : Target {
 
     private void Awake()
     {
-        Health = 100;
+        Health = 10;
     }
     public override void Damage(GunController gun)
     {

@@ -30,12 +30,14 @@ public class ViveInput : MonoBehaviour
 
         if (Device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            m_gun.ShowRay = true;
+            // m_gun.ShowRay = true;
+            m_gun.StartStopWatch();
+            Debug.Log("StopWatch started.");
         }
 
         if (Device.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            m_gun.ShowRay = false;
+            //m_gun.ShowRay = false;
         }
 
         if (Device.GetTouchDown(SteamVR_Controller.ButtonMask.Trigger))
