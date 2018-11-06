@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using EZEffects;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -25,6 +26,8 @@ public class GunController : MonoBehaviour
     private Ray RayFromGun;
 
     private Vector3 currentPosition;
+    private Vector3 currentPositionPrev;
+    private float length = 0;
     private Vector3 pointOn5;
     private Vector3 pointOn10;
     private Vector3 pointOn15;
@@ -47,6 +50,13 @@ public class GunController : MonoBehaviour
         RayFromGun = new Ray(Barrel.position, Barrel.forward);
         DisplayRay();
 
+        if (stopWatch.IsRunning)
+        {
+            var d = Vector3.Distance(currentPositionPrev, RayFromGun.GetPoint(10));
+            currentPositionPrev = RayFromGun.GetPoint(10);
+            length += d;
+            Debug.Log((length));
+        }
     }
 
     private void DisableEffects()
@@ -71,6 +81,7 @@ public class GunController : MonoBehaviour
     {
         stopWatch.Reset();
         currentPosition = RayFromGun.origin;
+        currentPositionPrev = RayFromGun.GetPoint(10);
 
         pointOn5 = RayFromGun.GetPoint(5);
         pointOn10 = RayFromGun.GetPoint(10);
@@ -82,7 +93,9 @@ public class GunController : MonoBehaviour
     public void StopStopWatch()
     {
         stopWatch.Stop();
-        Debug.Log("Time spent for shot: " + stopWatch.ElapsedMilliseconds);
+        File.WriteAllLines(ViveInput.SaveToThisShit, new[] {"Time spent for shot: " + stopWatch.ElapsedMilliseconds});
+
+        // Debug.Log("Time spent for shot: " + stopWatch.ElapsedMilliseconds);
     }
 
     public void Fire()
@@ -105,31 +118,41 @@ public class GunController : MonoBehaviour
             {
                 StopStopWatch();
                 hits++;
-                Debug.Log("Hits: " + hits);
+                //    Debug.Log("Hits: " + hits);
+                File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Hits: " + hits });
+
                 float distance = -1;
                 var positionZ = gameObject.transform.position.z;
 
                 if (positionZ.Equals(5))
                 {
                     distance = Vector3.Distance(pointOn5, gameObject.transform.position);
-                    Debug.Log("Distance at 5: " + distance);
+                    File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 5: " + distance });
+
+                    // Debug.Log("Distance at 5: " + distance);
                 }
                 else if (positionZ.Equals(10))
                 {
                     distance = Vector3.Distance(pointOn10, gameObject.transform.position);
-                    Debug.Log("Distance at 10: " + distance);
+                    File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 10: " + distance });
+
+                    //  Debug.Log("Distance at 10: " + distance);
                 }
                 else if (positionZ.Equals(15))
                 {
                     distance = Vector3.Distance(pointOn15, gameObject.transform.position);
-                    Debug.Log("Distance at 15: " + distance);
+                    File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 15: " + distance });
+
+                    //Debug.Log("Distance at 15: " + distance);
                 }
 
             }
             else
             {
                 missed++;
-                Debug.Log("Missed: " + missed);
+                File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Missed: " + missed });
+
+                // Debug.Log("Missed: " + missed);
             }
             CheckForDamage(hit.collider.gameObject);
 

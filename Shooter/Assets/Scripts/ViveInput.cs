@@ -1,15 +1,24 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Valve.VR;
 
 public class ViveInput : MonoBehaviour
 {
+    public static string SaveToThisShit =
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Shit.txt");
 
     public SteamVR_Controller.Device Device;
 
     private SteamVR_TrackedObject m_trackedObject = null;
     private GunController m_gun = null;
+
+    void OnApplicationQuit()
+    {
+        File.WriteAllLines(SaveToThisShit, new[] {Environment.NewLine});
+    }
 
     private void Awake()
     {
@@ -32,7 +41,8 @@ public class ViveInput : MonoBehaviour
         {
             // m_gun.ShowRay = true;
             m_gun.StartStopWatch();
-            Debug.Log("StopWatch started.");
+
+            File.WriteAllLines(SaveToThisShit, new [] {"StopWatch started."});
         }
 
         if (Device.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad))
