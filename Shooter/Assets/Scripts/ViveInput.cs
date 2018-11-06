@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Valve.VR;
 
 public class ViveInput : MonoBehaviour
 {
-    public static string SaveToThisShit =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Shit.txt");
 
     public SteamVR_Controller.Device Device;
 
@@ -17,12 +16,20 @@ public class ViveInput : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        File.WriteAllLines(SaveToThisShit, new[] {Environment.NewLine});
+        GunController.MyList.Add(Environment.NewLine);
+        using (var fs = new FileStream(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "Shit.txt"), FileMode.Append, FileAccess.Write))
+        using (var stream = new StreamWriter(fs))
+        {
+            foreach (var s in GunController.MyList)
+            {
+                stream.WriteLine(s);
+            }
+        }
     }
 
     private void Awake()
     {
-
+        GunController.MyList.Add(SceneManager.GetActiveScene().name);
     }
 
     private void Update()
@@ -42,7 +49,8 @@ public class ViveInput : MonoBehaviour
             // m_gun.ShowRay = true;
             m_gun.StartStopWatch();
 
-            File.WriteAllLines(SaveToThisShit, new [] {"StopWatch started."});
+            GunController.MyList.Add("StopWatch started");
+            //File.WriteAllLines(SaveToThisShit, new [] {"StopWatch started."});
         }
 
         if (Device.GetPressUp(SteamVR_Controller.ButtonMask.Touchpad))

@@ -34,6 +34,8 @@ public class GunController : MonoBehaviour
 
     public bool ShowRay;
 
+    public static List<string> MyList = new List<string>();
+
     private void Awake()
     {
         m_ammo = m_magazineSize;
@@ -55,7 +57,7 @@ public class GunController : MonoBehaviour
             var d = Vector3.Distance(currentPositionPrev, RayFromGun.GetPoint(10));
             currentPositionPrev = RayFromGun.GetPoint(10);
             length += d;
-            Debug.Log((length));
+            //Debug.Log((length));
         }
     }
 
@@ -79,6 +81,7 @@ public class GunController : MonoBehaviour
 
     public void StartStopWatch()
     {
+        length = 0;
         stopWatch.Reset();
         currentPosition = RayFromGun.origin;
         currentPositionPrev = RayFromGun.GetPoint(10);
@@ -93,8 +96,8 @@ public class GunController : MonoBehaviour
     public void StopStopWatch()
     {
         stopWatch.Stop();
-        File.WriteAllLines(ViveInput.SaveToThisShit, new[] {"Time spent for shot: " + stopWatch.ElapsedMilliseconds});
-
+       // File.WriteAllLines(ViveInput.SaveToThisShit, new[] {"Time spent for shot: " + stopWatch.ElapsedMilliseconds});
+        MyList.Add("Time spent for shot: " + stopWatch.ElapsedMilliseconds);
         // Debug.Log("Time spent for shot: " + stopWatch.ElapsedMilliseconds);
     }
 
@@ -119,29 +122,35 @@ public class GunController : MonoBehaviour
                 StopStopWatch();
                 hits++;
                 //    Debug.Log("Hits: " + hits);
-                File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Hits: " + hits });
-
+               // File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Hits: " + hits });
+                MyList.Add("Hits: " + hits);
                 float distance = -1;
                 var positionZ = gameObject.transform.position.z;
 
                 if (positionZ.Equals(5))
                 {
                     distance = Vector3.Distance(pointOn5, gameObject.transform.position);
-                    File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 5: " + distance });
+                    MyList.Add("Distance at 5: " + distance);
+                    MyList.Add("Length at 5: " + length);
+                 //   File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 5: " + distance });
 
                     // Debug.Log("Distance at 5: " + distance);
                 }
                 else if (positionZ.Equals(10))
                 {
                     distance = Vector3.Distance(pointOn10, gameObject.transform.position);
-                    File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 10: " + distance });
+                    MyList.Add("Distance at 10: " + distance);
+                    MyList.Add("Length at 10: " + length);
+                   // File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 10: " + distance });
 
                     //  Debug.Log("Distance at 10: " + distance);
                 }
                 else if (positionZ.Equals(15))
                 {
                     distance = Vector3.Distance(pointOn15, gameObject.transform.position);
-                    File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 15: " + distance });
+                    MyList.Add("Distance at 15: " + distance);
+                    MyList.Add("Length at 15: " + length);
+                   // File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Distance at 15: " + distance });
 
                     //Debug.Log("Distance at 15: " + distance);
                 }
@@ -150,8 +159,8 @@ public class GunController : MonoBehaviour
             else
             {
                 missed++;
-                File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Missed: " + missed });
-
+               // File.WriteAllLines(ViveInput.SaveToThisShit, new[] { "Missed: " + missed });
+               MyList.Add("Missed: " + missed);
                 // Debug.Log("Missed: " + missed);
             }
             CheckForDamage(hit.collider.gameObject);
